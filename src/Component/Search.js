@@ -1,5 +1,8 @@
+import {useState} from 'react';
 
 function Search(props){
+
+    const [cidade,setCidade] = useState("");
 
     function detectarPesquisa(e){
         e.preventDefault();
@@ -15,27 +18,53 @@ function Search(props){
         .then(data=>{
             const{main, name, sys, weather} = data;
             // console.log(data)
-            if(sys != undefined)
-                console.log(sys.country)
-            if(weather != undefined)
-            // console.log(weather[0]['id']);
-                console.log(weather[0]['description']);
-            if(main != undefined)
-                console.log(main.temp_min);
-            if(main != undefined)
-                console.log(main.temp_max);
-            if(name != undefined)
-                console.log(name)
+            if(sys != undefined){
+
+            if(weather != undefined){
+
+               const icon = `https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/${weather[0]["icon"]}.svg`;
+              
+               setCidade(`
+                <div>
+                <p>${main.temp}</p>
+                <p>${sys.country}</p>
+                <p>${name}</p>
+                <p>${weather[0]['description']}</p>
+                <img src="${icon}" />
+                </div>
+
+                `);
+
+
+                }
+            }else{
+                setCidade("")
+            }
+
         })
     }
     return(
+        <div className="searchWraper">
+
         <div className="search">
             <h2 className="search h2">Digite a cidade para saber a previsão</h2>
             <form onSubmit={(e)=>detectarPesquisa(e)}>
-                <input placeholder={props.input}  type="text" name="pesquisaInput"/>
+                <input placeholder={props.placeholder}  type="text" name="pesquisaInput"/>
                 <input type="submit" value="Pesquisar por cidade..." />
             </form>
         </div>
+
+{
+
+    (cidade!= "")?
+
+    <div dangerouslySetInnerHTML={{__html: cidade}} />:
+
+    <div>Pesquise por algo acima...</div>
+
+}
+
+</div>
     )
 }
 
